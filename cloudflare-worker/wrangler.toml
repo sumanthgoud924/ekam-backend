@@ -1,0 +1,9 @@
+name = "ekam-api-proxy"
+main = "worker.js"
+compatibility_date = "2025-04-16"
+
+route = "api.ekam.digital/*"
+zone_id = ""  # ← FILL: Get from Cloudflare Dashboard → Overview → Zone ID
+
+[env.production]
+vars = { BACKEND_URL = "https://ekam-backend.onrender.com" }

@@ -1,0 +1,46 @@
+# Ekam Backend - Fly.io Configuration
+# Deploy: fly deploy --config fly.toml
+
+app = "ekam-backend"
+primary_region = "ord"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  PYTHONUNBUFFERED = "1"
+  DATA_DIR = "/data"
+  UPLOAD_DIR = "/data/uploads"
+  AUDIO_DIR = "/data/audio"
+  DATABASE_PATH = "/data/ekam.db"
+  MAX_FILE_SIZE_MB = "50"
+  MAX_TEXT_LENGTH = "50000"
+  CORS_ORIGINS = "https://ekam.digital,https://www.ekam.digital"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/health"
+    timeout = "5s"
+
+[mounts]
+  source = "ekam_data"
+  destination = "/data"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[experimental]
+  auto_rollback = true

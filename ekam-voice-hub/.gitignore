@@ -1,0 +1,27 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+data/
+backend/models/weights/*.bin
+backend/models/weights/*.pt
+backend/models/weights/*.onnx
+*.egg-info/
+dist/
+build/
+
+# Node
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
