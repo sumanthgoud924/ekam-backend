@@ -21,9 +21,10 @@ import AudioTranslate from './pages/AudioTranslate'
 import Settings from './pages/Settings'
 import ProUpgrade from './pages/ProUpgrade'
 import ToolsLanding from './tools/ToolsLanding'
-import ImgToWord from './tools/ImgToWord'
-import ImgToPdf from './tools/ImgToPdf'
-import ImgConverter from './tools/ImgConverter'
+import JpegToWord from './tools/JpegToWord'
+import JpegToPdf from './tools/JpegToPdf'
+import JpegPngConverter from './tools/JpegPngConverter'
+import ImageResizer from './tools/ImageResizer'
 import PdfMerge from './tools/PdfMerge'
 import PdfSplit from './tools/PdfSplit'
 import PdfCompress from './tools/PdfCompress'
@@ -37,7 +38,6 @@ import BulkWhatsApp from './tools/BulkWhatsApp'
 import Legal from './pages/Legal'
 import AdminDashboard from './pages/AdminDashboard'
 import Profile from './pages/Profile'
-import AIVision from './tools/AIVision'
 import DevStudio from './tools/DevStudio'
 import PasswordGenerator from './tools/PasswordGenerator'
 import ColorPicker from './tools/ColorPicker'
@@ -101,9 +101,10 @@ function AppContent() {
           <Route path="/translate" element={<Translator />} />
           <Route path="/audio-translate" element={<AudioTranslate />} />
           <Route path="/tools" element={<ToolsLanding />} />
-          <Route path="/tools/image-to-word" element={<ImgToWord />} />
-          <Route path="/tools/image-to-pdf" element={<ImgToPdf />} />
-          <Route path="/tools/img-converter" element={<ImgConverter />} />
+          <Route path="/tools/jpeg-to-word" element={<JpegToWord />} />
+          <Route path="/tools/jpeg-to-pdf" element={<JpegToPdf />} />
+          <Route path="/tools/jpeg-png-converter" element={<JpegPngConverter />} />
+          <Route path="/tools/image-resizer" element={<ImageResizer />} />
           <Route path="/tools/pdf-merge" element={<PdfMerge />} />
           <Route path="/tools/pdf-split" element={<PdfSplit />} />
           <Route path="/tools/pdf-compress" element={<PdfCompress />} />
@@ -114,7 +115,7 @@ function AppContent() {
           <Route path="/tools/text-tools" element={<WordCounter />} />
           <Route path="/tools/unit-converter" element={<UnitConverter />} />
           <Route path="/tools/bulk-whatsapp" element={<BulkWhatsApp />} />
-          <Route path="/tools/ai-vision" element={<AIVision />} />
+
           <Route path="/tools/dev-studio" element={<DevStudio />} />
           <Route path="/tools/password-generator" element={<PasswordGenerator />} />
           <Route path="/tools/color-picker" element={<ColorPicker />} />

@@ -4,7 +4,7 @@ import { Upload, FileSpreadsheet, Loader2, Download, X, Camera } from 'lucide-re
 import { api } from '../api/client'
 import CameraCapture from '../components/CameraCapture'
 
-export default function ImgToWord() {
+export default function JpegToWord() {
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [showCamera, setShowCamera] = useState(false)
@@ -55,10 +55,10 @@ export default function ImgToWord() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-          <FileSpreadsheet size={24} className="text-primary-500" /> Image to Word
+          <FileSpreadsheet size={24} className="text-primary-500" /> JPEG to Word
         </h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-          Extract text from images using OCR and save as a Word document.
+          Extract text from JPEG images using OCR and save as a Word document.
         </p>
       </div>
 

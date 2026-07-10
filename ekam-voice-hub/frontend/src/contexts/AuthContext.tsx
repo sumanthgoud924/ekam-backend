@@ -195,9 +195,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = isSignedUp || isAdmin
 
   useEffect(() => {
-    setIsAdmin(true)
-    setShowKeyGenerator(true)
-    localStorage.setItem(AUTH_KEY, 'admin')
+    const auth = localStorage.getItem(AUTH_KEY)
+    const storedUser = localStorage.getItem(USER_KEY)
+
+    if (auth === 'admin') {
+      setIsAdmin(true)
+      setShowKeyGenerator(true)
+    } else if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser)
+        setUser(parsed)
+      } catch {
+        localStorage.removeItem(USER_KEY)
+      }
+    }
   }, [])
 
   useEffect(() => {

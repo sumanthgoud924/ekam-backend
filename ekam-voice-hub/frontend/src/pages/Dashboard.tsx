@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Volume2, Mic, FileText, Languages, ArrowRight, Zap, Globe, BookOpen,
-  Clock, TrendingUp, Sparkles, Library, Wrench, FileImage, QrCode, MessageSquare, Network,
+  Clock, TrendingUp, Sparkles, Library, Wrench, FileImage, QrCode, MessageSquare,
 } from 'lucide-react'
 import { getHealth, getLibrary, LibraryItem, HealthResponse } from '../api/client'
 import { useTheme } from '../hooks/useTheme'
@@ -14,8 +14,7 @@ const quickActions = [
   { to: '/documents', icon: FileText, label: 'Document Reader', desc: 'Read docs aloud with AI', gradient: 'from-purple-500 to-pink-500' },
   { to: '/translate', icon: Languages, label: 'Translate', desc: 'Translate between languages', gradient: 'from-orange-500 to-red-500' },
   { to: '/tools/bulk-whatsapp', icon: MessageSquare, label: 'Bulk WhatsApp', desc: 'Send messages to multiple contacts', gradient: 'from-green-500 to-emerald-600' },
-  { to: '/tools/ai-vision', icon: Sparkles, label: 'AI Vision Analyzer', desc: 'Analyze images & diagrams using NVIDIA AI', gradient: 'from-amber-500 to-orange-500' },
-  { to: '/tools/image-to-word', icon: FileImage, label: 'Image to Word', desc: 'Extract text from images via OCR', gradient: 'from-cyan-500 to-teal-500' },
+  { to: '/tools/jpeg-to-word', icon: FileImage, label: 'JPEG to Word', desc: 'Extract text from images via OCR', gradient: 'from-cyan-500 to-teal-500' },
   { to: '/tools/pdf-merge', icon: Wrench, label: 'PDF Tools', desc: 'Merge, split, compress & rotate PDFs', gradient: 'from-pink-500 to-rose-500' },
   { to: '/tools/qr-generator', icon: QrCode, label: 'QR Generator', desc: 'Create QR codes instantly', gradient: 'from-violet-500 to-purple-500' },
   { to: '/tools/dev-studio', icon: Wrench, label: 'Developer Studio', desc: 'Format JSON, Base64 encode and decode data', gradient: 'from-sky-500 to-blue-500' },

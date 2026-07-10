@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 type FormatType = 'png' | 'jpeg' | 'webp' | 'bmp'
 const formats: FormatType[] = ['png', 'jpeg', 'webp', 'bmp']
 
-export default function ImgConverter() {
+export default function JpegPngConverter() {
   const [sourceImage, setSourceImage] = useState<string | null>(null)
   const [sourceName, setSourceName] = useState('')
   const [targetFormat, setTargetFormat] = useState<FormatType>('png')
@@ -117,10 +117,10 @@ export default function ImgConverter() {
     <div className="space-y-6 max-w-3xl mx-auto">
       <div>
         <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-          <Image size={24} className="text-primary-500" /> Image Converter
+          <Image size={24} className="text-primary-500" /> JPEG/PNG Converter
         </h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-          Convert images between PNG, JPEG, WebP, and BMP formats. Resize while converting.
+          Convert between JPEG, PNG, WebP, and BMP formats. Resize while converting.
         </p>
       </div>
 

@@ -4,7 +4,7 @@ import { Upload, FileImage, Loader2, Download, X, Plus, Camera } from 'lucide-re
 import { api } from '../api/client'
 import CameraCapture from '../components/CameraCapture'
 
-export default function ImgToPdf() {
+export default function JpegToPdf() {
   const [files, setFiles] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
   const [showCamera, setShowCamera] = useState(false)
@@ -56,10 +56,10 @@ export default function ImgToPdf() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-          <FileImage size={24} className="text-primary-500" /> Image to PDF
+          <FileImage size={24} className="text-primary-500" /> JPEG to PDF
         </h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-          Convert one or more images into a single PDF document.
+          Convert one or more JPEG/PNG images into a single PDF document.
         </p>
       </div>
 

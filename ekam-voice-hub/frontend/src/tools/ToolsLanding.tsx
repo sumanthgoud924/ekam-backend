@@ -15,9 +15,10 @@ const toolCategories = [
   {
     title: 'Scan & Convert',
     tools: [
-      { to: '/tools/image-to-word', icon: FileSpreadsheet, label: 'Image to Word', desc: 'OCR text extraction to Word document', gradient: 'from-blue-500 to-cyan-500', badge: 'Camera' },
-      { to: '/tools/image-to-pdf', icon: FileImage, label: 'Image to PDF', desc: 'Convert images or scans to PDF', gradient: 'from-green-500 to-emerald-500', badge: 'Camera' },
-      { to: '/tools/img-converter', icon: Image, label: 'Image Converter', desc: 'Convert PNG, JPEG, WebP, BMP — resize too', gradient: 'from-pink-500 to-rose-500' },
+      { to: '/tools/jpeg-to-word', icon: FileSpreadsheet, label: 'JPEG to Word', desc: 'OCR text extraction to Word document', gradient: 'from-blue-500 to-cyan-500', badge: 'Camera' },
+      { to: '/tools/jpeg-to-pdf', icon: FileImage, label: 'JPEG to PDF', desc: 'Convert images or scans to PDF', gradient: 'from-green-500 to-emerald-500', badge: 'Camera' },
+      { to: '/tools/jpeg-png-converter', icon: Image, label: 'JPEG/PNG Converter', desc: 'Convert between JPEG, PNG, WebP, BMP — resize too', gradient: 'from-pink-500 to-rose-500' },
+      { to: '/tools/image-resizer', icon: Image, label: 'Image Resizer', desc: 'Resize JPEG and PNG images to exact dimensions', gradient: 'from-amber-500 to-orange-500' },
       { to: '/tools/pdf-to-text', icon: FileSearch, label: 'PDF to Text', desc: 'Extract text content from PDF files', gradient: 'from-cyan-500 to-teal-500' },
       { to: '/tools/text-to-pdf', icon: FileText, label: 'Text to PDF', desc: 'Write text and generate a PDF document', gradient: 'from-amber-500 to-orange-500' },
       { to: '/tools/qr-generator', icon: QrCode, label: 'QR Generator', desc: 'Create QR codes from URLs and text', gradient: 'from-violet-500 to-purple-500' },

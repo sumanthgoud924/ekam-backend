@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Outlet, NavLink, useLocation, Link } from 'react-router-dom'
 import {
   LayoutDashboard, Volume2, Mic, FileText, Languages, Library, Settings,
-  Ear, Shield, Wrench, Crown, User, LogOut,
+  Ear, Shield, Wrench, Crown, User, LogOut, X, Mail, Lock, UserPlus, LogIn,
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -21,7 +21,51 @@ const baseNavItems = [
 
 export default function Layout() {
   const location = useLocation()
-  const { isAdmin, signOut } = useAuth()
+  const { isAdmin, isAuthenticated, signOut, registerUser, authenticateUser } = useAuth()
+  const [authOpen, setAuthOpen] = useState(!isAuthenticated)
+  const [authTab, setAuthTab] = useState<'signin' | 'signup'>('signin')
+  const [authEmail, setAuthEmail] = useState('')
+  const [authPassword, setAuthPassword] = useState('')
+  const [authName, setAuthName] = useState('')
+  const [authError, setAuthError] = useState('')
+  const [authLoading, setAuthLoading] = useState(false)
+
+  useEffect(() => {
+    if (isAuthenticated || isAdmin) setAuthOpen(false)
+  }, [isAuthenticated, isAdmin])
+
+  const handleAuthSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setAuthError('')
+    setAuthLoading(true)
+
+    if (authTab === 'signup') {
+      const result = registerUser(authEmail, authPassword, authName)
+      if (result.success) {
+        setAuthOpen(false)
+        setAuthLoading(false)
+        return
+      }
+      setAuthError(result.error || 'Registration failed')
+      setAuthLoading(false)
+      return
+    }
+
+    const result = authenticateUser(authEmail, authPassword)
+    if (result.success) {
+      setAuthOpen(false)
+      setAuthLoading(false)
+      return
+    }
+    setAuthError(result.error || 'Invalid email or password')
+    setAuthLoading(false)
+  }
+
+  const dismissAuth = () => {
+    if (isAuthenticated || isAdmin) {
+      setAuthOpen(false)
+    }
+  }
 
   const navItems = [
     ...baseNavItems,
@@ -41,6 +85,107 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
+      {/* Auth Modal */}
+      {authOpen && !isAuthenticated && !isAdmin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl shadow-2xl border overflow-hidden" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)' }}>
+            {/* Tabs */}
+            <div className="flex border-b" style={{ borderColor: 'var(--border)' }}>
+              <button
+                onClick={() => { setAuthTab('signin'); setAuthError('') }}
+                className={`flex-1 py-3.5 text-sm font-semibold transition-colors relative ${authTab === 'signin' ? 'text-primary-500' : ''}`}
+                style={{ color: authTab === 'signin' ? 'var(--gradient-start)' : 'var(--text-muted)' }}
+              >
+                <LogIn size={14} className="inline mr-1.5" />
+                Sign In
+                {authTab === 'signin' && <div className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full" style={{ background: 'linear-gradient(135deg, var(--gradient-start), var(--gradient-end))' }} />}
+              </button>
+              <button
+                onClick={() => { setAuthTab('signup'); setAuthError('') }}
+                className={`flex-1 py-3.5 text-sm font-semibold transition-colors relative ${authTab === 'signup' ? 'text-primary-500' : ''}`}
+                style={{ color: authTab === 'signup' ? 'var(--gradient-start)' : 'var(--text-muted)' }}
+              >
+                <UserPlus size={14} className="inline mr-1.5" />
+                Sign Up
+                {authTab === 'signup' && <div className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full" style={{ background: 'linear-gradient(135deg, var(--gradient-start), var(--gradient-end))' }} />}
+              </button>
+            </div>
+
+            <form onSubmit={handleAuthSubmit} className="p-6 space-y-4">
+              <div className="text-center mb-2">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-indigo-500 text-white text-lg font-bold mb-2">E</div>
+                <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Welcome to Ekam Tools</h2>
+                <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>{authTab === 'signin' ? 'Sign in to your account' : 'Create a new account'}</p>
+              </div>
+
+              {authError && (
+                <div className="rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 p-3 text-xs text-red-600 dark:text-red-400">
+                  {authError}
+                </div>
+              )}
+
+              {authTab === 'signup' && (
+                <div>
+                  <label className="label">Name</label>
+                  <div className="relative">
+                    <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
+                    <input
+                      type="text" value={authName} onChange={e => setAuthName(e.target.value)}
+                      placeholder="Your name" required
+                      className="input !pl-9 text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="label">Email</label>
+                <div className="relative">
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
+                  <input
+                    type="email" value={authEmail} onChange={e => setAuthEmail(e.target.value)}
+                    placeholder="you@example.com" required
+                    className="input !pl-9 text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="label">Password</label>
+                <div className="relative">
+                  <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
+                  <input
+                    type="password" value={authPassword} onChange={e => setAuthPassword(e.target.value)}
+                    placeholder={authTab === 'signup' ? 'At least 4 characters' : 'Your password'} required
+                    minLength={4}
+                    className="input !pl-9 text-sm"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit" disabled={authLoading}
+                className="btn-primary w-full py-2.5 text-sm font-semibold disabled:opacity-50"
+                style={{ background: 'linear-gradient(135deg, var(--gradient-start), var(--gradient-end))' }}
+              >
+                {authLoading ? 'Please wait...' : authTab === 'signin' ? 'Sign In' : 'Create Account'}
+              </button>
+
+              <div className="text-center space-y-2">
+                <button type="button" onClick={dismissAuth} className="text-xs font-medium hover:underline" style={{ color: 'var(--text-muted)' }}>
+                  Continue as Guest
+                </button>
+                {authTab === 'signin' && (
+                  <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                    Admin? Sign in with the admin email
+                  </p>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:flex-col lg:w-60 lg:fixed lg:inset-y-0 border-r z-30"
         style={{ backgroundColor: 'var(--nav-bg)', borderColor: 'var(--nav-border)' }}
@@ -151,14 +296,14 @@ export default function Layout() {
         className="fixed bottom-0 left-0 right-0 z-30 lg:hidden border-t pb-safe"
         style={{ backgroundColor: 'var(--nav-bg)', borderColor: 'var(--nav-border)' }}
       >
-        <div className="flex items-center justify-around px-1 py-0.5">
+        <div className="flex items-center gap-0.5 px-1 py-0.5 overflow-x-auto scrollbar-none snap-x snap-mandatory">
           {navItems.map(({ to, icon: Icon, shortLabel }) => (
             <NavLink
               key={to}
               to={to}
               end={to === '/'}
               className={({ isActive }) =>
-                `bottom-tab ${isActive ? 'active' : ''}`
+                `bottom-tab snap-center shrink-0 ${isActive ? 'active' : ''}`
               }
             >
               <Icon size={18} />
