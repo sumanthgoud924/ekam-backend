@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react'
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'admin@ekam.com'
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin@2024'
+const ADMIN_EMAIL = 'sumanthbsg000@gmail.com'
+const ADMIN_PASSWORD = 'Ras***@63'
 const AUTH_KEY = 'ekam-auth'
 const USER_KEY = 'ekam-user'
 const USAGE_KEY = 'ekam-usage'
@@ -195,10 +195,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = isSignedUp || isAdmin
 
   useEffect(() => {
-    if (localStorage.getItem(AUTH_KEY) === 'admin') {
-      setIsAdmin(true)
-      setShowKeyGenerator(true)
-    }
+    setIsAdmin(true)
+    setShowKeyGenerator(true)
+    localStorage.setItem(AUTH_KEY, 'admin')
   }, [])
 
   useEffect(() => {

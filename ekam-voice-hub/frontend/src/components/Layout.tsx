@@ -2,11 +2,9 @@ import { useState } from 'react'
 import { Outlet, NavLink, useLocation, Link } from 'react-router-dom'
 import {
   LayoutDashboard, Volume2, Mic, FileText, Languages, Library, Settings,
-  Ear, Shield, ShieldOff, Lock, LogOut, X, Wrench, Crown, Bot, User,
+  Ear, Shield, Wrench, Crown, User, LogOut,
 } from 'lucide-react'
-import ReCAPTCHA from 'react-google-recaptcha'
 import { useAuth } from '../contexts/AuthContext'
-import toast from 'react-hot-toast'
 
 const baseNavItems = [
   { to: '/', icon: LayoutDashboard, label: 'Home', shortLabel: 'Home' },
@@ -23,87 +21,12 @@ const baseNavItems = [
 
 export default function Layout() {
   const location = useLocation()
-  const { isAdmin, isSignedUp, signOut, user } = useAuth()
-  const { registerUser, authenticateUser } = useAuth()
-  const [showAuth, setShowAuth] = useState(false)
-  const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'admin'>('signin')
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
-  const [agreedToPolicy, setAgreedToPolicy] = useState(false)
+  const { isAdmin, signOut } = useAuth()
 
   const navItems = [
     ...baseNavItems,
     ...(isAdmin ? [{ to: '/admin', icon: Shield, label: 'Admin Console', shortLabel: 'Admin' }] : [])
   ]
-
-  const resetForm = () => {
-    setName('')
-    setEmail('')
-    setPassword('')
-  }
-
-  const closeModal = () => {
-    setShowAuth(false)
-    resetForm()
-    setRecaptchaToken(null)
-    setAgreedToPolicy(false)
-  }
-
-  const handleSignIn = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email.trim() || !password) {
-      toast.error('Please enter email and password')
-      return
-    }
-    const result = authenticateUser(email.trim(), password)
-    if (result.success) {
-      closeModal()
-      toast.success(result.role === 'admin' ? 'Admin mode enabled' : `Welcome back!`)
-    } else {
-      toast.error(result.error || 'Invalid credentials')
-    }
-  }
-
-  const handleSignUp = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!agreedToPolicy) {
-      toast.error('You must agree to the Privacy Policy')
-      return
-    }
-    if (!recaptchaToken) {
-      toast.error('Please complete the reCAPTCHA verification')
-      return
-    }
-    if (!name.trim() || !email.trim() || !password) {
-      toast.error('Please fill all fields')
-      return
-    }
-    const result = registerUser(email.trim(), password, name.trim())
-    if (result.success) {
-      closeModal()
-      toast.success(`Signed up as ${name.trim()}`)
-      setAuthTab('signin')
-    } else {
-      toast.error(result.error || 'Registration failed')
-    }
-  }
-
-  const handleAdminSignIn = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email.trim() || !password) {
-      toast.error('Please enter admin email and password')
-      return
-    }
-    const result = authenticateUser(email.trim(), password)
-    if (result.success && result.role === 'admin') {
-      closeModal()
-      toast.success('Admin mode enabled')
-    } else {
-      toast.error('Invalid admin credentials')
-    }
-  }
 
   const getPageTitle = () => {
     const item = navItems.find(n => n.to === location.pathname)
@@ -157,26 +80,17 @@ export default function Layout() {
             </Link>
           )}
 
-          {isSignedUp || isAdmin ? (
+          {isAdmin ? (
             <button
               onClick={() => signOut()}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
               style={{ color: 'var(--text-secondary)' }}
             >
-              <Shield size={12} className={isAdmin ? 'text-amber-500' : 'text-primary-500'} />
-              <span>{isAdmin ? 'Exit Admin' : `Sign Out (${isAdmin ? 'Admin' : user.name})`}</span>
+              <Shield size={12} className="text-amber-500" />
+              <span>Admin</span>
               <LogOut size={12} className="ml-auto" />
             </button>
-          ) : (
-            <button
-              onClick={() => { setAuthTab('signin'); setShowAuth(true) }}
-              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              <Lock size={12} />
-              <span>Sign In / Sign Up</span>
-            </button>
-          )}
+          ) : null}
           <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Ekam Tools v2.0</p>
         </div>
       </aside>
@@ -191,13 +105,9 @@ export default function Layout() {
       >
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/20 text-white text-xs font-bold">E</div>
         <span className="text-base font-bold text-white flex-1">{getPageTitle()}</span>
-        {isSignedUp || isAdmin ? (
+        {isAdmin && (
           <button onClick={() => signOut()} className="rounded-lg bg-white/15 p-1.5 text-white" title="Sign out">
             <LogOut size={14} />
-          </button>
-        ) : (
-          <button onClick={() => setShowAuth(true)} className="rounded-lg bg-white/15 p-1.5 text-white" title="Sign in">
-            <User size={14} />
           </button>
         )}
       </header>
@@ -261,137 +171,6 @@ export default function Layout() {
 
       <div className="lg:hidden h-14" />
 
-      {/* Auth Modal */}
-      {showAuth && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-2xl p-6 shadow-modal border" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)' }}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-                {authTab === 'signin' && <Lock size={16} className="text-primary-500" />}
-                {authTab === 'signup' && <User size={16} className="text-primary-500" />}
-                {authTab === 'admin' && <Shield size={16} className="text-amber-500" />}
-                {authTab === 'signin' && 'Sign In'}
-                {authTab === 'signup' && 'Create Account'}
-                {authTab === 'admin' && 'Admin Access'}
-              </h2>
-              <button
-                onClick={closeModal}
-                className="rounded-lg p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                style={{ color: 'var(--text-muted)' }}
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <div className="flex border-b mb-4" style={{ borderColor: 'var(--border)' }}>
-              <button
-                onClick={() => setAuthTab('signin')}
-                className={`flex-1 pb-2 text-xs font-semibold text-center border-b-2 transition-colors ${authTab === 'signin' ? 'border-primary-500 text-primary-500' : 'border-transparent text-gray-400 hover:text-gray-500'}`}
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => setAuthTab('signup')}
-                className={`flex-1 pb-2 text-xs font-semibold text-center border-b-2 transition-colors ${authTab === 'signup' ? 'border-primary-500 text-primary-500' : 'border-transparent text-gray-400 hover:text-gray-500'}`}
-              >
-                Sign Up
-              </button>
-              <button
-                onClick={() => { setAuthTab('admin'); setEmail('admin@ekam.com'); setPassword('') }}
-                className={`flex-1 pb-2 text-xs font-semibold text-center border-b-2 transition-colors ${authTab === 'admin' ? 'border-amber-500 text-amber-500' : 'border-transparent text-gray-400 hover:text-gray-500'}`}
-              >
-                Admin
-              </button>
-            </div>
-
-            {authTab === 'signin' && (
-              <form onSubmit={handleSignIn} className="space-y-3">
-                <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                  Sign in with your email and password.
-                </p>
-                <div>
-                  <label className="label">Email</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className="input text-xs" required />
-                </div>
-                <div>
-                  <label className="label">Password</label>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" className="input text-xs" required />
-                </div>
-                <button type="submit" className="btn-primary w-full py-2 text-xs font-semibold">Sign In</button>
-                <p className="text-[11px] text-center" style={{ color: 'var(--text-muted)' }}>
-                  Don't have an account?{' '}
-                  <button type="button" onClick={() => setAuthTab('signup')} className="text-primary-500 font-semibold hover:underline">Sign Up</button>
-                </p>
-              </form>
-            )}
-
-            {authTab === 'signup' && (
-              <form onSubmit={handleSignUp} className="space-y-3">
-                <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                  Create an account to get started.
-                </p>
-                <div>
-                  <label className="label">Full Name</label>
-                  <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name" className="input text-xs" required />
-                </div>
-                <div>
-                  <label className="label">Email</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className="input text-xs" required />
-                </div>
-                <div>
-                  <label className="label">Password</label>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 4 characters" className="input text-xs" required minLength={4} />
-                </div>
-                
-                <div className="flex items-start gap-2 pt-1">
-                  <input type="checkbox" id="policy" checked={agreedToPolicy} onChange={e => setAgreedToPolicy(e.target.checked)} className="mt-0.5 rounded border-gray-300 text-teal-600 focus:ring-teal-500" />
-                  <label htmlFor="policy" className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>
-                    I agree to the <Link to="/legal" onClick={closeModal} className="text-teal-600 hover:underline">Privacy Policy</Link> and Terms of Service.
-                  </label>
-                </div>
-
-                <div className="flex justify-center pt-2">
-                  <div className="scale-75 sm:scale-90 origin-top">
-                    <ReCAPTCHA
-                      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                      onChange={(val) => setRecaptchaToken(val)}
-                      theme="light"
-                    />
-                  </div>
-                </div>
-
-                <button type="submit" className="btn-primary w-full py-2 text-xs font-semibold">Create Account</button>
-                <p className="text-[11px] text-center" style={{ color: 'var(--text-muted)' }}>
-                  Already have an account?{' '}
-                  <button type="button" onClick={() => setAuthTab('signin')} className="text-primary-500 font-semibold hover:underline">Sign In</button>
-                </p>
-              </form>
-            )}
-
-            {authTab === 'admin' && (
-              <form onSubmit={handleAdminSignIn} className="space-y-3">
-                <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                  Sign in with admin credentials to access the admin console.
-                </p>
-                <div>
-                  <label className="label">Admin Email</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@ekam.com" className="input text-xs" required />
-                </div>
-                <div>
-                  <label className="label">Admin Password</label>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter admin password" className="input text-xs" required />
-                </div>
-                <div className="flex gap-2">
-                  <button type="button" onClick={closeModal} className="btn-secondary flex-1 text-xs py-2">Cancel</button>
-                  <button type="submit" className="btn-primary flex-1 text-xs py-2" style={{ background: 'linear-gradient(135deg, #d97706, #b45309)' }}>
-                    <Lock size={14} /> Sign In
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
